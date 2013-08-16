@@ -103,7 +103,7 @@ if(!isset($conf['disableDomainConfig']) || empty($conf['disableDomainConfig'])) 
             'displayCond' => 'FIELD:tx_pagenotfoundhandling_enable:REQ:true',
             'config' => array(
                 'type' => 'user',
-                'userFunc' => 'EXT:pagenotfoundhandling/class.tx_pagenotfoundhandling_LanguageSelect.php:tx_pagenotfoundhandling_LanguageSelect->tca',
+                'userFunc' => 'AAW\\Pagenotfoundhandling\\Utility\\LanguageSelectUtility->tca',
             ),
         ),
         'tx_pagenotfoundhandling_languageParam' => array(
@@ -125,8 +125,8 @@ if(!isset($conf['disableDomainConfig']) || empty($conf['disableDomainConfig'])) 
         $GLOBALS['TCA']['sys_domain']['ctrl']['requestUpdate'] = 'tx_pagenotfoundhandling_enable';
     }
 
-    t3lib_extMgm::addTCAcolumns('sys_domain', $tempColumns, 1);
-    t3lib_extMgm::addToAllTCAtypes('sys_domain', '
+    \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::addTCAcolumns('sys_domain', $tempColumns, 1);
+    \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::addToAllTCAtypes('sys_domain', '
         --div--;LLL:EXT:pagenotfoundhandling/locallang_db.xml:pagenotfoundhandling.sys_domain.tcasheet.title,
         tx_pagenotfoundhandling_enable;;;;1-1-1,
         tx_pagenotfoundhandling_default404Page;;;;1-1-1,
@@ -136,7 +136,5 @@ if(!isset($conf['disableDomainConfig']) || empty($conf['disableDomainConfig'])) 
         tx_pagenotfoundhandling_ignoreLanguage;;;;1-1-1,
         tx_pagenotfoundhandling_forceLanguage;;;;1-1-1,
         tx_pagenotfoundhandling_languageParam;;;;1-1-1');
-
-
 }
 ?>

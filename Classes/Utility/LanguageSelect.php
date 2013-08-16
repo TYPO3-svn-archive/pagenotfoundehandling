@@ -1,9 +1,10 @@
 <?php
+namespace Aaw\Pagenotfoundhandling\Utility;
 /**
  * **************************************************************
  * Copyright notice
  *
- * (c) 2010 Agentur am Wasser | Maeder & Partner AG
+ * (c) 2010-2013 Agentur am Wasser | Maeder & Partner AG
  * All rights reserved
  *
  * This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +25,7 @@
  * **************************************************************
  *
  * @author     Agentur am Wasser | Maeder & Partner AG <development@agenturamwasser.ch>
- * @copyright  Copyright (c) 2010 Agentur am Wasser | Maeder & Partner AG (http://www.agenturamwasser.ch)
+ * @copyright  Copyright (c) 2010-2013 Agentur am Wasser | Maeder & Partner AG (http://www.agenturamwasser.ch)
  * @license    http://www.gnu.org/copyleft/gpl.html     GNU General Public License
  * @category   TYPO3
  * @package    pagenotfoundhandling
@@ -32,23 +33,22 @@
  */
 
 /**
- * Language handling class
+ * Language handling utility
  *
  * @author   Agentur am Wasser | Maeder & Partner AG <development@agenturamwasser.ch>
  * @category TYPO3
  * @package  pagenotfoundhandling
  */
-
-class tx_pagenotfoundhandling_LanguageSelect
+class LanguageSelectUtility
 {
     /**
      * Returns a select box for use in TCA userFunc
      *
      * @param array $PA
-     * @param t3lib_TCEforms $fObj
+     * @param t3lib_TCEforms | \TYPO3\CMS\Backend\Form\FormEngine $fObj
      * @return string
      */
-    public function tca($PA, t3lib_TCEforms $fObj)
+    public function tca($PA, $fObj)
     {
         $options = $this->_getLanguageSelector($PA['itemFormElValue']);
 
@@ -104,7 +104,7 @@ class tx_pagenotfoundhandling_LanguageSelect
                 $noneSelected = false;
             }
 
-            $options .= sprintf('<option %s value="%s">%s [PID:%s]</option>',
+            $options .= \sprintf('<option %s value="%s">%s [PID:%s]</option>',
                                     $selected,
                                     $language['uid'],
                                     $language['title'],
@@ -141,7 +141,4 @@ class tx_pagenotfoundhandling_LanguageSelect
     }
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/pagenotfoundhandling/class.tx_pagenotfoundhandling_LanguageSelect.php']) {
-    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/pagenotfoundhandling/class.tx_pagenotfoundhandling_LanguageSelect.php']);
-}
 ?>

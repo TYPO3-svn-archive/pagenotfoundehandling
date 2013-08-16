@@ -1,9 +1,10 @@
 <?php
+namespace Aaw\Pagenotfoundhandling\Controller;
 /**
  * **************************************************************
  * Copyright notice
  *
- * (c) 2010 Agentur am Wasser | Maeder & Partner AG
+ * (c) 2010-2013 Agentur am Wasser | Maeder & Partner AG
  * All rights reserved
  *
  * This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +25,7 @@
  * **************************************************************
  *
  * @author     Agentur am Wasser | Maeder & Partner AG <development@agenturamwasser.ch>
- * @copyright  Copyright (c) 2010 Agentur am Wasser | Maeder & Partner AG (http://www.agenturamwasser.ch)
+ * @copyright  Copyright (c) 2010-2013 Agentur am Wasser | Maeder & Partner AG (http://www.agenturamwasser.ch)
  * @license    http://www.gnu.org/copyleft/gpl.html     GNU General Public License
  * @category   TYPO3
  * @package    pagenotfoundhandling
@@ -38,7 +39,7 @@
  * @category TYPO3
  * @package  pagenotfoundhandling
  */
-class tx_pagenotfoundhandling
+class PagenotfoundhandlingController
 {
     /**
      * The params given from tslib_fe pageErrorHandler
@@ -148,12 +149,12 @@ class tx_pagenotfoundhandling
 	 * Main method called through tslib_fe::pageErrorHandler()
 	 *
 	 * @param array $params
-	 * @param tslib_fe $tslib_fe
+	 * @param tslib_fe | \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $tslib_fe
 	 * @return string
 	 */
-    public function main($params, tslib_fe $tslib_fe)
+    public function main($params, $tslib_fe)
     {
-        $this->_get = t3lib_div::_GET();
+        $this->_get = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::_GET();
 
         // prevent infinite loops
         if($this->_get['loopPrevention']) {
@@ -202,7 +203,7 @@ class tx_pagenotfoundhandling
     {
         $lang = $this->_defaultLanguageKey;
 
-        if(t3lib_extMgm::isLoaded('static_info_tables') && !empty($this->_forceLanguage)) {
+        if(\Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::isLoaded('static_info_tables') && !empty($this->_forceLanguage)) {
             $res = $GLOBALS['TYPO3_DB']->sql_query('
                 SELECT
                     *
@@ -224,9 +225,7 @@ class tx_pagenotfoundhandling
             }
         }
 
-        require_once PATH_typo3 . 'sysext/lang/lang.php';
-        $language = t3lib_div::makeInstance('language');
-        $language instanceof language;
+        $language = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getLanguageInstance();
         $language->init($lang);
         $language->includeLLFile('EXT:pagenotfoundhandling/locallang_404.xml');
 
@@ -253,8 +252,7 @@ class tx_pagenotfoundhandling
         $language = (int) $this->_get[$this->_languageParam];
 
         if($language) {
-            require_once t3lib_extMgm::extPath('pagenotfoundhandling') . 'class.tx_pagenotfoundhandling_LanguageSelect.php';
-            if(array_key_exists($language, tx_pagenotfoundhandling_LanguageSelect::getLanguages(true))) {
+            if(array_key_exists($language, \Aaw\Pagenotfoundhandling\Utility\LanguageSelectUtility::getLanguages(true))) {
                 $this->_forceLanguage = $language;
             }
         }
@@ -267,9 +265,9 @@ class tx_pagenotfoundhandling
      */
     protected function _loadDomainConfig()
     {
-        $domain = t3lib_div::getIndpEnv('TYPO3_HOST_ONLY');
+        $domain = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getIndpEnv('TYPO3_HOST_ONLY');
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'sys_domain', 'domainName=\'' . $domain . '\' AND hidden=0');
-//var_dump($url);
+
         if($GLOBALS['TYPO3_DB']->sql_num_rows($res) == 1) {
             if($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
                 if($row['tx_pagenotfoundhandling_enable']) {
@@ -299,7 +297,7 @@ class tx_pagenotfoundhandling
      */
     protected function _loadConstantsConfig()
     {
-        $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pagenotfoundhandling']);
+        $conf = \unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pagenotfoundhandling']);
 
         // store all configuration
         $this->_conf = $conf;
@@ -371,8 +369,9 @@ class tx_pagenotfoundhandling
 
 			$pageRow = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'pages', $where);
 			if(count($pageRow) === 1) {
-				$pageRow = current($pageRow);
-				$url = t3lib_div::locationHeaderUrl('/');
+				$pageRow = \current($pageRow);
+
+				$url = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::locationHeaderUrl('/');
 				$url .= 'index.php?id=' . $this->_default404Page . '&loopPrevention=1';
 
 				if(!empty($this->_forceLanguage)) {
@@ -381,34 +380,33 @@ class tx_pagenotfoundhandling
 
 				if($this->_isForbiddenError) {
                     if(count($this->_additional403GetParams)) {
-                        $url .= '&' . implode('&', $this->_additional403GetParams);
+                        $url .= '&' . \implode('&', $this->_additional403GetParams);
                     }
 				} else {
     				if(count($this->_additional404GetParams)) {
-    				    $url .= '&' . implode('&', $this->_additional404GetParams);
+    				    $url .= '&' . \implode('&', $this->_additional404GetParams);
     				}
 				}
 
-                $url = str_replace('###CURRENT_URL###', urlencode($this->_params['currentUrl']), $url);
+                $url = \str_replace('###CURRENT_URL###', \urlencode($this->_params['currentUrl']), $url);
 
                 $headers = array(
-                    'User-agent: ' . t3lib_div::getIndpEnv('HTTP_USER_AGENT'),
-                    'Referer: ' . t3lib_div::getIndpEnv('TYPO3_REQUEST_URL')
+                    'User-agent: ' . \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getIndpEnv('HTTP_USER_AGENT'),
+                    'Referer: ' . \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getIndpEnv('TYPO3_REQUEST_URL'),
                 );
 
-				$html = t3lib_div::getURL($url, 0, $headers);
-
+                $html = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getURL($url, 0, $headers);
 			}
     	}
     	if($html === null && !empty($this->_defaultTemplateFile)) {
-			$file = t3lib_div::getFileAbsFileName($this->_defaultTemplateFile);
+    	    $file = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getFileAbsFileName($this->_defaultTemplateFile);
 
-			if(!empty($file) && is_readable($file)) {
-				$html = file_get_contents($file);
+			if(!empty($file) && \is_readable($file)) {
+				$html = \file_get_contents($file);
 			}
     	}
 
-    	if(!is_null($html)) {
+    	if(!\is_null($html)) {
     		return $this->_processMarkers($html);
     	}
 
@@ -443,16 +441,16 @@ class tx_pagenotfoundhandling
                 $this->_forbiddenHeader = '';
                 break;
             case 1:
-                $this->_forbiddenHeader = t3lib_utility_Http::HTTP_STATUS_400;
+                $this->_forbiddenHeader = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getHttpUtilityStatusHeaderConstant('HTTP_STATUS_400');
                 break;
             case 2:
-                $this->_forbiddenHeader = t3lib_utility_Http::HTTP_STATUS_401;
+                $this->_forbiddenHeader = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getHttpUtilityStatusHeaderConstant('HTTP_STATUS_401');
                 break;
             case 3:
-                $this->_forbiddenHeader = t3lib_utility_Http::HTTP_STATUS_402;
+                $this->_forbiddenHeader = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getHttpUtilityStatusHeaderConstant('HTTP_STATUS_402');
                 break;
             case 4:
-                $this->_forbiddenHeader = t3lib_utility_Http::HTTP_STATUS_403;
+                $this->_forbiddenHeader = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getHttpUtilityStatusHeaderConstant('HTTP_STATUS_403');
                 break;
             default :
                 if($overrideIfEmpty) {
@@ -471,7 +469,7 @@ class tx_pagenotfoundhandling
     protected function _addAdditionalGetParams($params)
     {
         $params = $this->_normalizeGetParams($params);
-        $this->_additional404GetParams = array_merge($this->_additional404GetParams, t3lib_div::trimExplode('&', $params, true));
+        $this->_additional404GetParams = \array_merge($this->_additional404GetParams, \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::trimExplode('&', $params, true));
     }
 
     /**
@@ -483,7 +481,7 @@ class tx_pagenotfoundhandling
     protected function _addAdditional403GetParams($params)
     {
         $params = $this->_normalizeGetParams($params);
-        $this->_additional403GetParams = array_merge($this->_additional403GetParams, t3lib_div::trimExplode('&', $params, true));
+        $this->_additional403GetParams = array_merge($this->_additional403GetParams, \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::trimExplode('&', $params, true));
     }
 
     /**
@@ -495,11 +493,8 @@ class tx_pagenotfoundhandling
     protected function _normalizeGetParams($params)
     {
         // strip out params that will be generated in _getHtml()
-        return preg_replace('/&?(id|loopPrevention|' . $this->_languageParam . ')=[^&]*/', '', $params);
+        return \preg_replace('/&?(id|loopPrevention|' . $this->_languageParam . ')=[^&]*/', '', $params);
     }
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/pagenotfoundhandling/class.tx_pagenotfoundhandling.php']) {
-    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/pagenotfoundhandling/class.tx_pagenotfoundhandling.php']);
-}
 ?>
