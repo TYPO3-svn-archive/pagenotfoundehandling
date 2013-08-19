@@ -1,5 +1,6 @@
 <?php
 namespace Aaw\Pagenotfoundhandling\Utility;
+use \TYPO3\CMS\Core\Utility as TYPO3Utility;
 /**
  * **************************************************************
  * Copyright notice
@@ -64,7 +65,7 @@ class Typo3versionUtility
             if(!class_exists('TYPO3\\CMS\\Core\\Utility\\VersionNumberUtility', false)) {
                 self::$_version = t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version);
             }
-            self::$_version = \TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version);
+            self::$_version = TYPO3Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version);
         }
     }
 
@@ -81,7 +82,7 @@ class Typo3versionUtility
 //         } elseif(self::$_version < self::VERSION_6_0) {
 //             return t3lib_utility_Math::canBeInterpretedAsInteger($var);
 //         }
-//         return \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($var);
+//         return TYPO3Utility\MathUtility::canBeInterpretedAsInteger($var);
 //     }
 
     /**
@@ -94,7 +95,7 @@ class Typo3versionUtility
         if(self::$_version < self::VERSION_6_0) {
             return t3lib_div::trimExplode($delim, $string, $removeEmptyValues, $limit);
         }
-        return \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode($delim, $string, $removeEmptyValues, $limit);
+        return TYPO3Utility\GeneralUtility::trimExplode($delim, $string, $removeEmptyValues, $limit);
     }
 
     /**
@@ -107,7 +108,7 @@ class Typo3versionUtility
         if(self::$_version < self::VERSION_6_0) {
             return t3lib_div::_GET($var);
         }
-        return \TYPO3\CMS\Core\Utility\GeneralUtility::_GET($var);
+        return TYPO3Utility\GeneralUtility::_GET($var);
     }
 
     /**
@@ -120,7 +121,7 @@ class Typo3versionUtility
         if(self::$_version < self::VERSION_6_0) {
             return t3lib_div::getIndpEnv($getEnvName);
         }
-        return \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv($getEnvName);
+        return TYPO3Utility\GeneralUtility::getIndpEnv($getEnvName);
     }
 
     /**
@@ -133,7 +134,7 @@ class Typo3versionUtility
         if(self::$_version < self::VERSION_6_0) {
             return t3lib_div::locationHeaderUrl($path);
         }
-        return \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($path);
+        return TYPO3Utility\GeneralUtility::locationHeaderUrl($path);
     }
 
     /**
@@ -146,7 +147,7 @@ class Typo3versionUtility
         if(self::$_version < self::VERSION_6_0) {
             return t3lib_div::getURL($url, $includeHeader, $requestHeaders, $report);
         }
-        return \TYPO3\CMS\Core\Utility\GeneralUtility::getURL($url, $includeHeader, $requestHeaders, $report);
+        return TYPO3Utility\GeneralUtility::getURL($url, $includeHeader, $requestHeaders, $report);
     }
 
     /**
@@ -159,7 +160,7 @@ class Typo3versionUtility
         if(self::$_version < self::VERSION_6_0) {
             return t3lib_div::getFileAbsFileName($filename, $onlyRelative, $relToTYPO3_mainDir);
         }
-        return \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($filename, $onlyRelative, $relToTYPO3_mainDir);
+        return TYPO3Utility\GeneralUtility::getFileAbsFileName($filename, $onlyRelative, $relToTYPO3_mainDir);
     }
 
     /**
@@ -172,7 +173,7 @@ class Typo3versionUtility
         if(self::$_version < self::VERSION_6_0) {
             return t3lib_extMgm::extPath($key, $script);
         }
-        return \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($key, $script);
+        return TYPO3Utility\ExtensionManagementUtility::extPath($key, $script);
     }
 
     /**
@@ -186,7 +187,7 @@ class Typo3versionUtility
             return t3lib_extMgm::isLoaded($key, $exitOnError);
         }
 
-        return \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded($key, $exitOnError);
+        return TYPO3Utility\ExtensionManagementUtility::isLoaded($key, $exitOnError);
     }
 
     /**
@@ -200,7 +201,7 @@ class Typo3versionUtility
             return t3lib_extMgm::addTCAcolumns($table, $columnArray, $addTofeInterface);
         }
 
-        return \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns($table, $columnArray, $addTofeInterface);
+        return TYPO3Utility\ExtensionManagementUtility::addTCAcolumns($table, $columnArray, $addTofeInterface);
     }
 
     /**
@@ -214,7 +215,7 @@ class Typo3versionUtility
             return t3lib_extMgm::addToAllTCAtypes($table, $str, $specificTypesList, $position);
         }
 
-        return \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes($table, $str, $specificTypesList, $position);
+        return TYPO3Utility\ExtensionManagementUtility::addToAllTCAtypes($table, $str, $specificTypesList, $position);
     }
 
     /**
@@ -230,7 +231,7 @@ class Typo3versionUtility
             return t3lib_div::makeInstance('language');
         }
 
-        return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Lang\\LanguageService');
+        return TYPO3Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Lang\\LanguageService');
     }
 
     /**
@@ -254,20 +255,6 @@ class Typo3versionUtility
             return $constants[$name];
         }
         return '';
-    }
-
-    /**
-     * Returns the class name of the TYPO3 http utility
-     *
-     * @return string
-     */
-    public static function getHttpUtilityClassName()
-    {
-        self::_determineVersion();
-        if(self::$_version < self::VERSION_6_0) {
-            return '\\t3lib_utility_Http';
-        }
-        return '\\TYPO3\\CMS\\Core\\Utility\\HttpUtility';
     }
 }
 

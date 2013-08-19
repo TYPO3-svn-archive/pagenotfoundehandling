@@ -1,5 +1,6 @@
 <?php
 namespace Aaw\Pagenotfoundhandling\Controller;
+use \Aaw\Pagenotfoundhandling\Utility;
 /**
  * **************************************************************
  * Copyright notice
@@ -154,7 +155,7 @@ class PagenotfoundhandlingController
 	 */
     public function main($params, $tslib_fe)
     {
-        $this->_get = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::_GET();
+        $this->_get = Utility\Typo3versionUtility::_GET();
 
         // prevent infinite loops
         if($this->_get['loopPrevention']) {
@@ -203,7 +204,7 @@ class PagenotfoundhandlingController
     {
         $lang = $this->_defaultLanguageKey;
 
-        if(\Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::isLoaded('static_info_tables') && !empty($this->_forceLanguage)) {
+        if(Utility\Typo3versionUtility::isLoaded('static_info_tables') && !empty($this->_forceLanguage)) {
             $res = $GLOBALS['TYPO3_DB']->sql_query('
                 SELECT
                     *
@@ -225,7 +226,7 @@ class PagenotfoundhandlingController
             }
         }
 
-        $language = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getLanguageInstance();
+        $language = Utility\Typo3versionUtility::getLanguageInstance();
         $language->init($lang);
         $language->includeLLFile('EXT:pagenotfoundhandling/locallang_404.xml');
 
@@ -265,7 +266,7 @@ class PagenotfoundhandlingController
      */
     protected function _loadDomainConfig()
     {
-        $domain = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getIndpEnv('TYPO3_HOST_ONLY');
+        $domain = Utility\Typo3versionUtility::getIndpEnv('TYPO3_HOST_ONLY');
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'sys_domain', 'domainName=\'' . $domain . '\' AND hidden=0');
 
         if($GLOBALS['TYPO3_DB']->sql_num_rows($res) == 1) {
@@ -371,7 +372,7 @@ class PagenotfoundhandlingController
 			if(count($pageRow) === 1) {
 				$pageRow = \current($pageRow);
 
-				$url = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::locationHeaderUrl('/');
+				$url = Utility\Typo3versionUtility::locationHeaderUrl('/');
 				$url .= 'index.php?id=' . $this->_default404Page . '&loopPrevention=1';
 
 				if(!empty($this->_forceLanguage)) {
@@ -391,15 +392,15 @@ class PagenotfoundhandlingController
                 $url = \str_replace('###CURRENT_URL###', \urlencode($this->_params['currentUrl']), $url);
 
                 $headers = array(
-                    'User-agent: ' . \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getIndpEnv('HTTP_USER_AGENT'),
-                    'Referer: ' . \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getIndpEnv('TYPO3_REQUEST_URL'),
+                    'User-agent: ' . Utility\Typo3versionUtility::getIndpEnv('HTTP_USER_AGENT'),
+                    'Referer: ' . Utility\Typo3versionUtility::getIndpEnv('TYPO3_REQUEST_URL'),
                 );
 
-                $html = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getURL($url, 0, $headers);
+                $html = Utility\Typo3versionUtility::getURL($url, 0, $headers);
 			}
     	}
     	if($html === null && !empty($this->_defaultTemplateFile)) {
-    	    $file = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getFileAbsFileName($this->_defaultTemplateFile);
+    	    $file = Utility\Typo3versionUtility::getFileAbsFileName($this->_defaultTemplateFile);
 
 			if(!empty($file) && \is_readable($file)) {
 				$html = \file_get_contents($file);
@@ -441,16 +442,16 @@ class PagenotfoundhandlingController
                 $this->_forbiddenHeader = '';
                 break;
             case 1:
-                $this->_forbiddenHeader = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getHttpUtilityStatusHeaderConstant('HTTP_STATUS_400');
+                $this->_forbiddenHeader = Utility\Typo3versionUtility::getHttpUtilityStatusHeaderConstant('HTTP_STATUS_400');
                 break;
             case 2:
-                $this->_forbiddenHeader = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getHttpUtilityStatusHeaderConstant('HTTP_STATUS_401');
+                $this->_forbiddenHeader = Utility\Typo3versionUtility::getHttpUtilityStatusHeaderConstant('HTTP_STATUS_401');
                 break;
             case 3:
-                $this->_forbiddenHeader = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getHttpUtilityStatusHeaderConstant('HTTP_STATUS_402');
+                $this->_forbiddenHeader = Utility\Typo3versionUtility::getHttpUtilityStatusHeaderConstant('HTTP_STATUS_402');
                 break;
             case 4:
-                $this->_forbiddenHeader = \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::getHttpUtilityStatusHeaderConstant('HTTP_STATUS_403');
+                $this->_forbiddenHeader = Utility\Typo3versionUtility::getHttpUtilityStatusHeaderConstant('HTTP_STATUS_403');
                 break;
             default :
                 if($overrideIfEmpty) {
@@ -469,7 +470,7 @@ class PagenotfoundhandlingController
     protected function _addAdditionalGetParams($params)
     {
         $params = $this->_normalizeGetParams($params);
-        $this->_additional404GetParams = \array_merge($this->_additional404GetParams, \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::trimExplode('&', $params, true));
+        $this->_additional404GetParams = \array_merge($this->_additional404GetParams, Utility\Typo3versionUtility::trimExplode('&', $params, true));
     }
 
     /**
@@ -481,7 +482,7 @@ class PagenotfoundhandlingController
     protected function _addAdditional403GetParams($params)
     {
         $params = $this->_normalizeGetParams($params);
-        $this->_additional403GetParams = array_merge($this->_additional403GetParams, \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::trimExplode('&', $params, true));
+        $this->_additional403GetParams = array_merge($this->_additional403GetParams, Utility\Typo3versionUtility::trimExplode('&', $params, true));
     }
 
     /**
