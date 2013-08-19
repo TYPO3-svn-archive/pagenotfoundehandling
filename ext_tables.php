@@ -3,6 +3,10 @@ if (!defined ('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
+if(version_compare(TYPO3_version, '6', '<')) {
+    require_once t3lib_extMgm::extPath('pagenotfoundhandling') . 'Classes/Utility/Typo3version.php';
+}
+
 
 $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$_EXTKEY]);
 
