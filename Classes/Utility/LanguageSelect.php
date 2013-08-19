@@ -45,7 +45,7 @@ class LanguageSelectUtility
      * Returns a select box for use in TCA userFunc
      *
      * @param array $PA
-     * @param t3lib_TCEforms | \TYPO3\CMS\Backend\Form\FormEngine $fObj
+     * @param \TYPO3\CMS\Backend\Form\FormEngine $fObj
      * @return string
      */
     public function tca($PA, $fObj)

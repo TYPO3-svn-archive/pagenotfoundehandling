@@ -3,11 +3,6 @@ if (!defined ('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
-if(version_compare(TYPO3_version, '6', '<')) {
-    require_once t3lib_extMgm::extPath('pagenotfoundhandling') . 'Classes/Utility/Typo3version.php';
-}
-
-
 $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$_EXTKEY]);
 
 // add the fields to tca of sys_domain
@@ -129,8 +124,8 @@ if(!isset($conf['disableDomainConfig']) || empty($conf['disableDomainConfig'])) 
         $GLOBALS['TCA']['sys_domain']['ctrl']['requestUpdate'] = 'tx_pagenotfoundhandling_enable';
     }
 
-    \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::addTCAcolumns('sys_domain', $tempColumns, 1);
-    \Aaw\Pagenotfoundhandling\Utility\Typo3versionUtility::addToAllTCAtypes('sys_domain', '
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('sys_domain', $tempColumns, 1);
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('sys_domain', '
         --div--;LLL:EXT:pagenotfoundhandling/locallang_db.xml:pagenotfoundhandling.sys_domain.tcasheet.title,
         tx_pagenotfoundhandling_enable;;;;1-1-1,
         tx_pagenotfoundhandling_default404Page;;;;1-1-1,
